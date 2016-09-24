@@ -5,7 +5,7 @@
 
 import unicodecsv
 import os
-path = 'C:\\Users\\aemra\\Documents\\Python\\Untitled Folder'
+path = 'C:\\Users\\aemra\\Documents\\Python\\Nanodegree'
 os.chdir(path)
 enrollments=[]
 f=open('enrollments.csv','rb')
@@ -148,7 +148,7 @@ len(unique_project_submitters)
 daily_engagement[0]['account_key']
 
 
-# In[17]:
+# In[16]:
 
 for enrollment in enrollments:
     student=enrollment['account_key']
@@ -157,7 +157,7 @@ for enrollment in enrollments:
         break
 
 
-# In[21]:
+# In[17]:
 
 count=0
 for enrollment in enrollments:
@@ -167,7 +167,7 @@ for enrollment in enrollments:
 print (count)
 
 
-# In[25]:
+# In[18]:
 
 for enrollment in enrollments:
     student=enrollment['account_key']
@@ -175,7 +175,7 @@ for enrollment in enrollments:
         print (enrollment)
 
 
-# In[32]:
+# In[19]:
 
 udacity_test_accounts = set()
 for enrollment in enrollments:
@@ -184,7 +184,7 @@ for enrollment in enrollments:
 len(udacity_test_accounts)
 
 
-# In[33]:
+# In[20]:
 
 def remove_udacity_accounts(data):
     non_udacity_data = []
@@ -194,7 +194,7 @@ def remove_udacity_accounts(data):
     return non_udacity_data
 
 
-# In[34]:
+# In[21]:
 
 # Remove Udacity test accounts from all three tables
 non_udacity_enrollments = remove_udacity_accounts(enrollments)
@@ -206,7 +206,19 @@ print (len(non_udacity_engagement))
 print (len(non_udacity_submissions))
 
 
-# In[35]:
+# In[107]:
+
+from collections import defaultdict
+
+def group_data(data, key_name):
+    grouped_data = defaultdict(list)
+    for data_point in data:
+        key = data_point[key_name]
+        grouped_data[key].append(data_point)
+    return grouped_data
+
+
+# In[108]:
 
 paid_students = {}
 for enrollment in non_udacity_enrollments:
@@ -220,14 +232,14 @@ for enrollment in non_udacity_enrollments:
 len(paid_students)
 
 
-# In[36]:
+# In[109]:
 
 def within_one_week(join_date, engagement_date):
     time_delta = engagement_date - join_date
-    return time_delta.days < 7
+    return time_delta.days < 7 and time_delta.days>=0
 
 
-# In[39]:
+# In[110]:
 
 def remove_free_trial_cancels(data):
     new_data = []
@@ -237,7 +249,7 @@ def remove_free_trial_cancels(data):
     return new_data
 
 
-# In[41]:
+# In[111]:
 
 paid_enrollments = remove_free_trial_cancels(non_udacity_enrollments)
 paid_engagement = remove_free_trial_cancels(non_udacity_engagement)
@@ -248,7 +260,16 @@ print (len(paid_engagement))
 print (len(paid_submissions))
 
 
-# In[45]:
+# In[112]:
+
+for engagement_record in paid_engagement:
+    if engagement_record['num_courses_visited']>0:
+        engagement_record['has_visited']=1
+    else:
+        engagement_record['has_visited']=0
+
+
+# In[113]:
 
 paid_engagement_in_first_week = []
 for engagement_record in paid_engagement:
@@ -261,6 +282,242 @@ for engagement_record in paid_engagement:
 
 len(paid_engagement_in_first_week)
 
+
+# In[114]:
+
+from collections import defaultdict
+engagement_by_account=defaultdict(list)
+for engagement_record in paid_engagement_in_first_week:
+    account_key=engagement_record['account_key']
+    engagement_by_account[account_key].append(engagement_record)
+
+
+# In[115]:
+
+total_minutes_by_account={}
+for account_key,engagement_for_student in engagement_by_account.items():
+    total_munite=0
+    for engagement_record in engagement_for_student:
+        total_munite+=engagement_record['total_minutes_visited']
+    total_minutes_by_account[account_key]=total_munite
+    
+
+
+# In[116]:
+
+import numpy as np
+# Summarize the data about minutes spent in the classroom
+total_minutes =list(total_minutes_by_account.values())
+print ('Mean:', np.mean(total_minutes))
+print ('Standard deviation:', np.std(total_minutes))
+print ('Minimum:', np.min(total_minutes))
+print ('Maximum:', np.max(total_minutes))
+
+
+# In[117]:
+
+student_with_max_minutes = None
+max_minutes = 0
+
+for student, total_minutes in total_minutes_by_account.items():
+    if total_minutes > max_minutes:
+        max_minutes = total_minutes
+        student_with_max_minutes = student
+        
+max_minutes
+
+
+# In[118]:
+
+max_minutes
+
+for engagement_record in paid_engagement_in_first_week:
+    if engagement_record['account_key'] == student_with_max_minutes:
+        print (engagement_record)
+
+
+# In[119]:
+
+total_lessons_by_account={}
+for account_key, engagement_for_student in engagement_by_account.items():
+    total_lesson=0
+    for engagement_record in engagement_for_student:
+        total_lesson+=engagement_record['lessons_completed']
+    total_lessons_by_account[account_key]=total_lesson
+
+
+# In[120]:
+
+import numpy as np
+# Summarize the data about minutes spent in the classroom
+total_lessons =list(total_lessons_by_account.values())
+print ('Mean:', np.mean(total_lessons))
+print ('Standard deviation:', np.std(total_lessons))
+print ('Minimum:', np.min(total_lessons))
+print ('Maximum:', np.max(total_lessons))
+
+
+# In[121]:
+
+def sum_grouped_items(grouped_data, field_name):
+    summed_data = {}
+    for key, data_points in grouped_data.items():
+        total = 0
+        data_points=list(data_points)
+        for data_point in data_points:
+            total += data_point[field_name]
+        summed_data[key] = total
+    return summed_data
+
+
+# In[122]:
+
+total_minutes_by_account = sum_grouped_items(engagement_by_account,
+                                             'total_minutes_visited')
+
+
+# In[123]:
+
+
+def describe_data(data):
+    total_values=list(data)
+    print ('Mean:', np.mean(total_values))
+    print ('Standard deviation:', np.std(total_values))
+    print ('Minimum:', np.min(total_values))
+    print ('Maximum:', np.max(total_values))
+    
+
+
+# In[124]:
+
+days_visited_by_account = sum_grouped_items(engagement_by_account,'has_visited')
+
+
+# In[125]:
+
+describe_data(days_visited_by_account.values())
+
+
+# In[126]:
+
+subway_project_lesson_keys = ['746169184', '3176718735']
+
+
+# In[127]:
+
+pass_subway_project = set()
+
+for submission in paid_submissions:
+    project = submission['lesson_key']
+    rating = submission['assigned_rating']    
+
+    if ((project in subway_project_lesson_keys) and
+            (rating == 'PASSED' or rating == 'DISTINCTION')):
+        pass_subway_project.add(submission['account_key'])
+
+len(pass_subway_project)
+
+
+# In[128]:
+
+passing_engagement = []
+non_passing_engagement = []
+
+for engagement_record in paid_engagement_in_first_week:
+    if engagement_record['account_key'] in pass_subway_project:
+        passing_engagement.append(engagement_record)
+    else:
+        non_passing_engagement.append(engagement_record)
+
+print len(passing_engagement)
+print len(non_passing_engagement)
+
+
+# In[130]:
+
+passing_engagement_by_account = group_data(passing_engagement,'account_key')
+non_passing_engagement_by_account = group_data(non_passing_engagement,'account_key')
+
+
+# In[ ]:
+
+print 'non-passing students:'
+non_passing_minutes=sum_grouped_items
+
+
+# In[132]:
+
+print 'non-passing students:'
+non_passing_minutes = sum_grouped_items(
+    non_passing_engagement_by_account,
+    'total_minutes_visited'
+)
+describe_data(non_passing_minutes.values())
+
+
+# In[133]:
+
+print 'non-passing students:'
+non_passing_minutes = sum_grouped_items(
+    non_passing_engagement_by_account,
+    'total_minutes_visited'
+)
+describe_data(non_passing_minutes.values())
+
+
+# In[134]:
+
+
+print 'passing students:'
+passing_minutes = sum_grouped_items(
+    passing_engagement_by_account,
+    'total_minutes_visited'
+)
+describe_data(passing_minutes.values())
+
+
+# In[135]:
+
+
+print 'non-passing students:'
+non_passing_lessons = sum_grouped_items(
+    non_passing_engagement_by_account,
+    'lessons_completed'
+)
+describe_data(non_passing_lessons.values())
+
+
+# In[138]:
+
+print 'passing students:'
+passing_lessons = sum_grouped_items(
+    passing_engagement_by_account,
+    'lessons_completed'
+)
+describe_data(passing_lessons.values())
+
+
+# In[139]:
+
+print 'non-passing students:'
+non_passing_visits = sum_grouped_items(
+    non_passing_engagement_by_account, 
+    'has_visited'
+)
+describe_data(non_passing_visits.values())
+
+
+# In[140]:
+
+print 'passing students:'
+passing_visits = sum_grouped_items(
+    passing_engagement_by_account,
+    'has_visited'
+)
+describe_data(passing_visits.values())
+
+
+# In[ ]:
 
 
 

@@ -206,7 +206,7 @@ print (len(non_udacity_engagement))
 print (len(non_udacity_submissions))
 
 
-# In[107]:
+# In[22]:
 
 from collections import defaultdict
 
@@ -218,7 +218,7 @@ def group_data(data, key_name):
     return grouped_data
 
 
-# In[108]:
+# In[23]:
 
 paid_students = {}
 for enrollment in non_udacity_enrollments:
@@ -232,14 +232,14 @@ for enrollment in non_udacity_enrollments:
 len(paid_students)
 
 
-# In[109]:
+# In[24]:
 
 def within_one_week(join_date, engagement_date):
     time_delta = engagement_date - join_date
     return time_delta.days < 7 and time_delta.days>=0
 
 
-# In[110]:
+# In[25]:
 
 def remove_free_trial_cancels(data):
     new_data = []
@@ -249,7 +249,7 @@ def remove_free_trial_cancels(data):
     return new_data
 
 
-# In[111]:
+# In[26]:
 
 paid_enrollments = remove_free_trial_cancels(non_udacity_enrollments)
 paid_engagement = remove_free_trial_cancels(non_udacity_engagement)
@@ -260,7 +260,7 @@ print (len(paid_engagement))
 print (len(paid_submissions))
 
 
-# In[112]:
+# In[27]:
 
 for engagement_record in paid_engagement:
     if engagement_record['num_courses_visited']>0:
@@ -269,7 +269,7 @@ for engagement_record in paid_engagement:
         engagement_record['has_visited']=0
 
 
-# In[113]:
+# In[28]:
 
 paid_engagement_in_first_week = []
 for engagement_record in paid_engagement:
@@ -283,7 +283,7 @@ for engagement_record in paid_engagement:
 len(paid_engagement_in_first_week)
 
 
-# In[114]:
+# In[29]:
 
 from collections import defaultdict
 engagement_by_account=defaultdict(list)
@@ -292,7 +292,7 @@ for engagement_record in paid_engagement_in_first_week:
     engagement_by_account[account_key].append(engagement_record)
 
 
-# In[115]:
+# In[30]:
 
 total_minutes_by_account={}
 for account_key,engagement_for_student in engagement_by_account.items():
@@ -303,7 +303,7 @@ for account_key,engagement_for_student in engagement_by_account.items():
     
 
 
-# In[116]:
+# In[31]:
 
 import numpy as np
 # Summarize the data about minutes spent in the classroom
@@ -314,7 +314,7 @@ print ('Minimum:', np.min(total_minutes))
 print ('Maximum:', np.max(total_minutes))
 
 
-# In[117]:
+# In[32]:
 
 student_with_max_minutes = None
 max_minutes = 0
@@ -327,7 +327,7 @@ for student, total_minutes in total_minutes_by_account.items():
 max_minutes
 
 
-# In[118]:
+# In[33]:
 
 max_minutes
 
@@ -336,7 +336,7 @@ for engagement_record in paid_engagement_in_first_week:
         print (engagement_record)
 
 
-# In[119]:
+# In[34]:
 
 total_lessons_by_account={}
 for account_key, engagement_for_student in engagement_by_account.items():
@@ -346,7 +346,7 @@ for account_key, engagement_for_student in engagement_by_account.items():
     total_lessons_by_account[account_key]=total_lesson
 
 
-# In[120]:
+# In[35]:
 
 import numpy as np
 # Summarize the data about minutes spent in the classroom
@@ -357,7 +357,7 @@ print ('Minimum:', np.min(total_lessons))
 print ('Maximum:', np.max(total_lessons))
 
 
-# In[121]:
+# In[36]:
 
 def sum_grouped_items(grouped_data, field_name):
     summed_data = {}
@@ -370,40 +370,42 @@ def sum_grouped_items(grouped_data, field_name):
     return summed_data
 
 
-# In[122]:
+# In[37]:
 
 total_minutes_by_account = sum_grouped_items(engagement_by_account,
                                              'total_minutes_visited')
 
 
-# In[123]:
+# In[55]:
 
-
+get_ipython().magic(u'matplotlib inline')
+import matplotlib.pyplot as plt
+import seaborn as sns
 def describe_data(data):
     total_values=list(data)
     print ('Mean:', np.mean(total_values))
     print ('Standard deviation:', np.std(total_values))
     print ('Minimum:', np.min(total_values))
     print ('Maximum:', np.max(total_values))
-    
+    plt.hist(data,bins=20)
 
 
-# In[124]:
+# In[56]:
 
 days_visited_by_account = sum_grouped_items(engagement_by_account,'has_visited')
 
 
-# In[125]:
+# In[57]:
 
 describe_data(days_visited_by_account.values())
 
 
-# In[126]:
+# In[58]:
 
 subway_project_lesson_keys = ['746169184', '3176718735']
 
 
-# In[127]:
+# In[59]:
 
 pass_subway_project = set()
 
@@ -418,7 +420,7 @@ for submission in paid_submissions:
 len(pass_subway_project)
 
 
-# In[128]:
+# In[60]:
 
 passing_engagement = []
 non_passing_engagement = []
@@ -433,19 +435,19 @@ print len(passing_engagement)
 print len(non_passing_engagement)
 
 
-# In[130]:
+# In[61]:
 
 passing_engagement_by_account = group_data(passing_engagement,'account_key')
 non_passing_engagement_by_account = group_data(non_passing_engagement,'account_key')
 
 
-# In[ ]:
+# In[62]:
 
 print 'non-passing students:'
 non_passing_minutes=sum_grouped_items
 
 
-# In[132]:
+# In[63]:
 
 print 'non-passing students:'
 non_passing_minutes = sum_grouped_items(
@@ -455,7 +457,7 @@ non_passing_minutes = sum_grouped_items(
 describe_data(non_passing_minutes.values())
 
 
-# In[133]:
+# In[64]:
 
 print 'non-passing students:'
 non_passing_minutes = sum_grouped_items(
@@ -465,7 +467,7 @@ non_passing_minutes = sum_grouped_items(
 describe_data(non_passing_minutes.values())
 
 
-# In[134]:
+# In[65]:
 
 
 print 'passing students:'
@@ -476,7 +478,7 @@ passing_minutes = sum_grouped_items(
 describe_data(passing_minutes.values())
 
 
-# In[135]:
+# In[66]:
 
 
 print 'non-passing students:'
@@ -487,7 +489,7 @@ non_passing_lessons = sum_grouped_items(
 describe_data(non_passing_lessons.values())
 
 
-# In[138]:
+# In[67]:
 
 print 'passing students:'
 passing_lessons = sum_grouped_items(
@@ -497,7 +499,7 @@ passing_lessons = sum_grouped_items(
 describe_data(passing_lessons.values())
 
 
-# In[139]:
+# In[68]:
 
 print 'non-passing students:'
 non_passing_visits = sum_grouped_items(
@@ -507,17 +509,31 @@ non_passing_visits = sum_grouped_items(
 describe_data(non_passing_visits.values())
 
 
-# In[140]:
+# In[69]:
 
+import seaborn as sns
 print 'passing students:'
 passing_visits = sum_grouped_items(
     passing_engagement_by_account,
     'has_visited'
 )
 describe_data(passing_visits.values())
+plt.xlabel("Label for x axis")
+plt.ylabel("Label for y axis")
 
 
-# In[ ]:
+# In[72]:
+
+plt.hist(passing_visits.values(), bins=8)
+plt.xlabel('Num of days')
+plt.title('Distribution of classroom visits in the fist week ' +
+         'for students who pass the subway project')
+
+
+plt.hist(non_passing_visits.values(),bins=8)
+plt.xlabel('Num of Days')
+plt.title('Distrubution of classroom visits in the fist week '+
+         'for students who do not pass the subway project')
 
 
 

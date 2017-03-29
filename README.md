@@ -7,7 +7,7 @@
 
 Use descriptive statistics and a statistical test to analyze the Stroop effect, a classic result of experimental psychology. Give your readers a good intuition for the data and use statistical inference to draw a conclusion based on the results. Use the Statistics Placement Advisor to determine if reviewing any of the Statistics course will help you prepare for this project.
 
-[Report]()
+[Report](https://github.com/AhmetHamzaEmra/Data-Analyst-Nanodegree-/blob/master/Test%20a%20Perceptual%20Phenomenon.pdf)
 
 
 ## Intro to Data Analysis: Investigate a Dataset
@@ -38,3 +38,12 @@ Play detective and put your machine learning skills to use by building an algori
 
 ## Data Visualization: Make Effective Data Visualization
 
+Create a data visualization from a data set that tells a story or highlights trends or patterns in the data. Use either dimple.js or d3.js to create the visualization. Your work should be a reflection of the theory and practice of data visualization, such as visual encodings, design principles, and effective communication.
+
+[Visualization](https://ahmethamzaemra.github.io/Projects/Project/country.html)
+
+## A/B Testing: Design an A/B Test
+
+Make design decisions for an A/B test, including which metrics to measure and how long the test should be run. Analyze the results of an A/B test that was run by Udacity and recommend whether or not to launch the change.
+
+[Report](https://github.com/AhmetHamzaEmra/Data-Analyst-Nanodegree-/blob/master/ab%20test.md)
